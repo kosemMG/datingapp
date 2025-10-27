@@ -1,9 +1,13 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
+  imports: [
+    NgOptimizedImage
+  ],
   styleUrl: './app.css'
 })
 export class App implements OnInit {
