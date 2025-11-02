@@ -1,3 +1,4 @@
 <app-nav />
-
-<app-home />
+<div [class]="router.url !== '/' ? 'mt-24 container mx-auto' : null">
+    <router-outlet />
+</div>
