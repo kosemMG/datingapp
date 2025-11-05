@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { Member } from '../../types/member';
+import { Photo } from '../../types/photo';
 
 @Injectable({
   providedIn: 'root'
@@ -17,5 +18,9 @@ export class MemberService {
 
   public getMemberById(id: string): Observable<Member> {
     return this.http.get<Member>(`${this.baseUrl}members/${id}`);
+  }
+
+  public getMemberPhotos(id: string): Observable<Photo[]> {
+    return this.http.get<Photo[]>(`${this.baseUrl}members/${id}/photos`);
   }
 }
