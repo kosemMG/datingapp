@@ -29,9 +29,7 @@ export class Nav implements OnInit {
     this.selectedTheme.set(theme);
     localStorage.setItem('theme', theme);
     document.documentElement.setAttribute('data-theme', this.selectedTheme());
-
-    const elem = document.activeElement as HTMLDivElement;
-    elem?.blur();
+    this.closeDropdown();
   }
 
   protected login(): void {
@@ -46,7 +44,13 @@ export class Nav implements OnInit {
   }
 
   protected logout(): void {
+    this.closeDropdown();
     this.accountService.logout();
     this.router.navigateByUrl('/');
+  }
+
+  protected closeDropdown(): void {
+    const elem = document.activeElement as HTMLDivElement;
+    elem?.blur();
   }
 }

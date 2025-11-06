@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
@@ -9,6 +9,8 @@ import { Photo } from '../../types/photo';
   providedIn: 'root'
 })
 export class MemberService {
+  public readonly editMode = signal(false);
+
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.apiUrl;
 
