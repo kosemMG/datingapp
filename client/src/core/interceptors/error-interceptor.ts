@@ -1,10 +1,13 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { catchError } from 'rxjs';
+import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
+import { catchError, Observable } from 'rxjs';
 import { inject } from '@angular/core';
 import { ToastService } from '../services/toast.service';
 import { NavigationExtras, Router } from '@angular/router';
 
-export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+export const errorInterceptor: HttpInterceptorFn = (
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn
+): Observable<HttpEvent<unknown>> => {
   const toast = inject(ToastService);
   const router = inject(Router);
 

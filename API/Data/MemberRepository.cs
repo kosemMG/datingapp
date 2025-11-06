@@ -37,4 +37,11 @@ public class MemberRepository(AppDbContext context) : IMemberRepository
             .Where(photo => photo.MemberId == memberId)
             .ToListAsync();
     }
+
+    public async Task<Member?> GetMemberForUpdate(string id)
+    {
+        return await context.Members
+            .Include(member => member.User)
+            .SingleOrDefaultAsync(member => member.Id == id);
+    }
 }

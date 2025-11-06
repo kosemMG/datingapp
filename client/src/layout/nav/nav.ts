@@ -6,6 +6,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { ToastService } from '../../core/services/toast.service';
 import { themes } from '../themes';
 import { UpperCasePipe } from '@angular/common';
+import { BusyService } from '../../core/services/busy.service';
 
 @Component({
   selector: 'app-nav',
@@ -14,6 +15,7 @@ import { UpperCasePipe } from '@angular/common';
 })
 export class Nav implements OnInit {
   protected readonly accountService = inject(AccountService);
+  protected readonly busyService = inject(BusyService);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
 
