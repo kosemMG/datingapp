@@ -80,4 +80,49 @@ public class MembersController(IMemberRepository repository, IPhotoService photo
         
         return BadRequest("Failed to upload photo");
     }
+
+    [HttpPut("set-main-photo/{photoId:int}")]
+    public async Task<ActionResult> SetMainPhoto(int photoId)
+    {
+        var member = await repository.GetMemberForUpdate(User.GetMemberId());
+        if (member == null) return BadRequest("Cannot retrieve member from token");
+        
+        var photo = member.Photos.SingleOrDefault(photo => photo.Id == photoId);
+        if (photo == null || member.ImageUrl == photo.Url)
+        {
+            return BadRequest("Cannot set main photo");
+        }
+
+        member.ImageUrl = photo.Url;
+        member.User.ImageUrl = photo.Url;
+
+        if (await repository.SaveAllAsync()) return NoContent();
+        
+        return BadRequest("Failed to set main photo");
+    }
+
+    [HttpDelete("delete-photo/{photoId:int}")]
+    public async Task<ActionResult> DeletePhoto(int photoId)
+    {
+        var member = await repository.GetMemberForUpdate(User.GetMemberId());
+        if (member == null) return BadRequest("Cannot retrieve member from token");
+        
+        var photo = member.Photos.SingleOrDefault(photo => photo.Id == photoId);
+        if (photo == null || member.ImageUrl == photo.Url)
+        {
+            return BadRequest("The photo cannot be deleted");
+        }
+
+        if (photo.PublicId != null)
+        {
+            var result = await photoService.DeletePhotoAsync(photo.PublicId);
+            if (result.Error != null) return BadRequest(result.Error.Message);
+        }
+        
+        member.Photos.Remove(photo);
+
+        if (await repository.SaveAllAsync()) return Ok();
+        
+        return BadRequest("Failed to delete photo");
+    }
 }
