@@ -1,6 +1,7 @@
 using API.DTO;
 using API.Entities;
 using API.Extensions;
+using API.Helpers;
 using API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,11 @@ namespace API.Controllers;
 [Authorize]
 public class MembersController(IMemberRepository repository, IPhotoService photoService) : BaseApiController
 {
-    [HttpGet]
-    public async Task<ActionResult<IReadOnlyList<Member>>> GetMembers() // localhost:5001/api/members
+    [HttpGet] // localhost:5001/api/members
+    public async Task<ActionResult<IReadOnlyList<Member>>> GetMembers([FromQuery] MemberParams memberParams)
     {
-        return Ok(await repository.GetMembersAsync());
+        memberParams.CurrentMemberId = User.GetMemberId();
+        return Ok(await repository.GetMembersAsync(memberParams));
     }
 
     [HttpGet("{id}")]
@@ -21,7 +23,7 @@ public class MembersController(IMemberRepository repository, IPhotoService photo
     {
         var member = await repository.GetMemberByIdAsync(id);
         
-        if (member == null) return NotFound();
+        if (member is null) return NotFound();
         return member;
     }
 
@@ -37,7 +39,7 @@ public class MembersController(IMemberRepository repository, IPhotoService photo
         var memberId = User.GetMemberId();
 
         var member = await repository.GetMemberForUpdate(memberId);
-        if (member == null) return BadRequest("Could not find member");
+        if (member is null) return BadRequest("Could not find member");
 
         member.DisplayName = memberUpdateDto.DisplayName ?? member.DisplayName;
         member.Description = memberUpdateDto.Description ?? member.Description;
@@ -57,7 +59,7 @@ public class MembersController(IMemberRepository repository, IPhotoService photo
     public async Task<ActionResult<Photo>> UploadPhoto([FromForm] IFormFile file)
     {
         var member = await repository.GetMemberForUpdate(User.GetMemberId());
-        if (member == null) return BadRequest("Cannot update member");
+        if (member is null) return BadRequest("Cannot update member");
 
         var result = await photoService.UploadPhotoAsync(file);
         if (result.Error != null) return BadRequest(result.Error.Message);
@@ -69,7 +71,7 @@ public class MembersController(IMemberRepository repository, IPhotoService photo
             MemberId = User.GetMemberId()
         };
 
-        if (member.ImageUrl == null)
+        if (member.ImageUrl is null)
         {
             member.ImageUrl = photo.Url;
             member.User.ImageUrl = photo.Url;
@@ -85,10 +87,10 @@ public class MembersController(IMemberRepository repository, IPhotoService photo
     public async Task<ActionResult> SetMainPhoto(int photoId)
     {
         var member = await repository.GetMemberForUpdate(User.GetMemberId());
-        if (member == null) return BadRequest("Cannot retrieve member from token");
+        if (member is null) return BadRequest("Cannot retrieve member from token");
         
         var photo = member.Photos.SingleOrDefault(photo => photo.Id == photoId);
-        if (photo == null || member.ImageUrl == photo.Url)
+        if (photo is null || member.ImageUrl == photo.Url)
         {
             return BadRequest("Cannot set main photo");
         }
@@ -105,10 +107,10 @@ public class MembersController(IMemberRepository repository, IPhotoService photo
     public async Task<ActionResult> DeletePhoto(int photoId)
     {
         var member = await repository.GetMemberForUpdate(User.GetMemberId());
-        if (member == null) return BadRequest("Cannot retrieve member from token");
+        if (member is null) return BadRequest("Cannot retrieve member from token");
         
         var photo = member.Photos.SingleOrDefault(photo => photo.Id == photoId);
-        if (photo == null || member.ImageUrl == photo.Url)
+        if (photo is null || member.ImageUrl == photo.Url)
         {
             return BadRequest("The photo cannot be deleted");
         }

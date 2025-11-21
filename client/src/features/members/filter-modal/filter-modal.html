@@ -1,0 +1,43 @@
+<dialog #filterModal class="modal">
+    <div class="modal-box max-w-lg">
+        <h3 class="text-lg font-bold">Select filters</h3>
+        <div class="flex justify-between items-center w-full mt-6">
+            <div class="flex flex-col w-full gap-6">
+                <label class="flex justify-between items-center">
+                    <span class="font-semibold">Select gender:</span>
+                    <form class="filter">
+                        <input type="reset" value="x" class="btn btn-square">
+                        <input [(ngModel)]="params().gender" aria-label="Male"
+                               name="gender" value="male" type="radio" class="btn">
+                        <input [(ngModel)]="params().gender" aria-label="Female"
+                               name="gender" value="female" type="radio" class="btn">
+                    </form>
+                </label>
+                <label class="flex justify-between items-center">
+                    <span class="font-semibold">Select age:</span>
+                    <div class="flex gap-3">
+                        <input (change)="onMinAgeChange()" [(ngModel)]="params().minAge" [min]="18"
+                               name="minAge" type="number" class="input w-20">
+                        <input (change)="onMaxAgeChange()" [(ngModel)]="params().maxAge" [min]="params().minAge || 18"
+                               name="maxAge" type="number" class="input w-20">
+                    </div>
+                </label>
+                <div class="flex justify-between items-center">
+                    <span class="font-semibold">Order by: </span>
+                    <select [(ngModel)]="params().orderBy" name="orderBy" class="select">
+                        <option value="lastActive">Last active</option>
+                        <option value="created">Newest members</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-action">
+            <button (click)="submit()" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+
+    <form method="dialog" class="modal-backdrop">
+        <button (click)="close()">Close</button>
+    </form>
+</dialog>

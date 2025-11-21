@@ -17,3 +17,12 @@ export interface EditableMember {
   city: string;
   country: string;
 }
+
+export class MemberParams {
+  gender?: 'male' | 'female';
+  minAge = 18;
+  maxAge = 100;
+  pageNumber = 1;
+  pageSize = 10;
+  orderBy: 'created' | 'lastActive' = 'lastActive';
+}

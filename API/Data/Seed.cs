@@ -16,7 +16,7 @@ public class Seed
         var memberData = await File.ReadAllTextAsync("Data/UserSeedData.json");
         var members = JsonSerializer.Deserialize<List<SeedUserDto>>(memberData);
 
-        if (members == null)
+        if (members is null)
         {
             Console.WriteLine("No members found in seed data");
             return;
