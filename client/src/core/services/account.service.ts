@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { LoginCredentials, RegisterCredentials, User } from '../../types/user';
 import { environment } from '../../environments/environment';
+import { LikesService } from './likes.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class AccountService {
 
   public readonly baseUrl = environment.apiUrl;
   private readonly http = inject(HttpClient);
+  private readonly likesService = inject(LikesService);
 
   public register(credentials: RegisterCredentials): Observable<User> {
     return this.http.post<User>(`${this.baseUrl}account/register`, credentials)
@@ -38,11 +40,13 @@ export class AccountService {
   public logout(): void {
     localStorage.removeItem('user');
     localStorage.removeItem('filters');
+    this.likesService.clearLikeIds();
     this.currentUser.set(null);
   }
 
   public setCurrentUser(user: User): void {
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUser.set(user);
+    this.likesService.getLikeIds();
   }
 }

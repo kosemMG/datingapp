@@ -19,6 +19,11 @@ public class Member
     // Navigation property
     [JsonIgnore]
     public List<Photo> Photos { get; set; } = [];
+
+    [JsonIgnore]
+    public List<MemberLike> LikedByMembers { get; set; } = [];
+    [JsonIgnore]
+    public List<MemberLike> LikedMembers { get; set; } = [];
     
     // Navigation property
     [JsonIgnore]

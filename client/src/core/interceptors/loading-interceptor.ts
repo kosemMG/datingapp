@@ -18,7 +18,19 @@ export const loadingInterceptor: HttpInterceptorFn = (
     return paramString ? `${url}?${paramString}` : url;
   };
 
+  const invalidateCacheKey = (urlPattern: string): void => {
+    for (const key of CACHE.keys()) {
+      if (key.includes(urlPattern)) {
+        CACHE.delete(key);
+      }
+    }
+  };
+
   const cacheKey = generateCacheKey(req.url, req.params);
+
+  if (req.method === 'POST' && req.url.includes('/likes')) {
+    invalidateCacheKey('/likes');
+  }
 
   if (req.method === 'GET') {
     const cachedResponse = CACHE.get(cacheKey);
